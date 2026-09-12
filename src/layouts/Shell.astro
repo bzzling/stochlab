@@ -11,6 +11,7 @@ const {
   active = '',
   description = 'An interactive stochastic systems workbench. C++ simulation, WebAssembly execution, and exact event-driven experiments.',
 } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
@@ -21,10 +22,12 @@ const {
     <title>{title} · StochLab</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#101719" />
+    <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta property="og:title" content={`${title} · StochLab`} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
   </head>
   <body>
     <a class="skip-link" href="#main">
@@ -45,6 +48,7 @@ const {
         <a href="/native/" class:list={{ active: active === 'native' }}>
           NATIVE CLI
         </a>
+        <a href="https://github.com/bzzling/stochlab">GITHUB ↗</a>
         <span class="version">v1.0</span>
       </nav>
     </header>

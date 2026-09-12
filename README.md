@@ -2,7 +2,7 @@
 
 ### An interactive stochastic systems workbench
 
-[Open the live workbench](https://stochlab.brandonling22.workers.dev) · [Project status and measured results](PROJECT_STATUS.md)
+[Open the live workbench](https://stochlab.brandonling.ca) · [Source and CLI guide](https://stochlab.brandonling.ca/native/) · [Project status and measured results](PROJECT_STATUS.md)
 
 StochLab makes stochastic models inspectable: generate trajectories, compare Monte
 Carlo estimates with theory, reflect Brownian paths, watch self-exciting arrivals,
@@ -72,6 +72,8 @@ The native target has no downloaded build dependencies; nlohmann/json 3.12.0 is
 vendored with its license.
 
 ```sh
+git clone https://github.com/bzzling/stochlab.git
+cd stochlab
 make native
 ./build/stochlab --help
 make test
@@ -251,9 +253,16 @@ npx wrangler deploy --dry-run
 npm run deploy
 ```
 
-Use the authenticated account intended for your own deployment. Production is live at [stochlab.brandonling22.workers.dev](https://stochlab.brandonling22.workers.dev).
+Production is live at [stochlab.brandonling.ca](https://stochlab.brandonling.ca).
+The checked-in Wrangler configuration attaches that custom domain to the `stochlab`
+Worker and disables workers.dev and preview URLs. Cloudflare manages the domain's
+DNS record and HTTPS certificate. The main brandonling.ca site is a separate Worker.
+
+For your own deployment, change the Worker name and custom domain in
+`wrangler.jsonc`, and the canonical `site` URL in `astro.config.mjs`, before building.
+Use your own authenticated Cloudflare account. Deployment is performed with
+Wrangler; pushing to GitHub alone does not deploy the site.
 Live verification is recorded in [PROJECT_STATUS.md](PROJECT_STATUS.md).
-No custom DNS changes are required.
 
 ## Deliberate limits
 

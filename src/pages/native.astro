@@ -4,12 +4,38 @@ import Shell from '../layouts/Shell.astro';
 
 <Shell title="Native CLI" active="native">
   <article class="prose">
-    <p class="eyebrow">REFERENCE / NATIVE TOOLCHAIN</p>
+    <p class="eyebrow">REFERENCE / SOURCE & NATIVE TOOLCHAIN</p>
     <h1>The same engine, in your shell.</h1>
     <p>
       The native executable and browser share the C++20 simulation and exchange
       implementations. Use the CLI for reproducible experiments, larger batches,
       JSON output, and measured benchmarks.
+    </p>
+    <h2>Get the source</h2>
+    <p>
+      StochLab is open source under the MIT license. The{' '}
+      <a href="https://github.com/bzzling/stochlab">GitHub repository</a>{' '}
+      includes the engine, native CLI, browser workbench, tests, and build
+      scripts.
+    </p>
+    <pre><code>git clone https://github.com/bzzling/stochlab.git
+cd stochlab</code></pre>
+    <p>
+      Start with the{' '}
+      <a href="https://github.com/bzzling/stochlab#readme">README</a>, or
+      inspect the{' '}
+      <a href="https://github.com/bzzling/stochlab/blob/main/docs/MATHEMATICS.md">
+        mathematical definitions and algorithms
+      </a>
+      ,{' '}
+      <a href="https://github.com/bzzling/stochlab/blob/main/docs/EXCHANGE.md">
+        exchange specification
+      </a>
+      , and{' '}
+      <a href="https://github.com/bzzling/stochlab/blob/main/PROJECT_STATUS.md">
+        validation and measured benchmarks
+      </a>
+      .
     </p>
     <h2>Build the native executable</h2>
     <p>
@@ -47,9 +73,15 @@ make bench
     <h2>Build the web workbench</h2>
     <p>
       Use Node.js 22.12+ or 24.2+ and Emscripten 4.0.16. The full installation
-      and pinned SDK setup are documented in the repository README.
+      instructions below install the pinned SDK inside the checkout.
     </p>
-    <pre><code>source /path/to/emsdk/emsdk_env.sh
+    <pre><code>git clone --depth 1 https://github.com/emscripten-core/emsdk.git work/emsdk
+cd work/emsdk
+./emsdk install 4.0.16
+./emsdk activate 4.0.16
+cd ../..
+source work/emsdk/emsdk_env.sh
+
 npm ci
 npm run build:wasm
 npm run dev
@@ -63,6 +95,25 @@ npm run test:browser</code></pre>
       hydrates only the experiment or exchange island. A dedicated Web Worker
       loads the Emscripten module and calls the C ABI; there is no JavaScript
       copy of the stochastic algorithms.
+    </p>
+    <h2>Deployment</h2>
+    <p>
+      The production workbench lives at{' '}
+      <a href="https://stochlab.brandonling.ca/">stochlab.brandonling.ca</a>.
+      Cloudflare Workers serves Astro's static pages and the compiled WASM
+      assets. Simulations run locally in your browser; no simulation requests go
+      to a server. The repository's Wrangler configuration declares the custom
+      domain.
+    </p>
+    <pre><code># After a successful production build
+npx wrangler login
+npx wrangler deploy --dry-run
+npm run deploy</code></pre>
+    <p>
+      When deploying your own fork, choose your own Worker name and domain in{' '}
+      <code>wrangler.jsonc</code> and update <code>site</code> in{' '}
+      <code>astro.config.mjs</code> before building. Authentication stays in
+      your local deployment tooling, outside the source and browser bundle.
     </p>
     <h2>Browser commands</h2>
     <pre><code>:process brownian

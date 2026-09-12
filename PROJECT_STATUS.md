@@ -2,9 +2,14 @@
 
 **Status: complete and deployed.** Verified on 2026-09-12.
 
-**Production:** [stochlab.brandonling22.workers.dev](https://stochlab.brandonling22.workers.dev)  
-**Cloudflare Worker:** `stochlab`  
-**Deployment version:** `662a4cbd-a27c-4193-98fb-659776bcaef5`  
+**Production:** [stochlab.brandonling.ca](https://stochlab.brandonling.ca)
+
+**Source:** [github.com/bzzling/stochlab](https://github.com/bzzling/stochlab)
+
+**Cloudflare Worker:** `stochlab`
+
+**Deployment version:** `662a4cbd-a27c-4193-98fb-659776bcaef5`
+
 **Verified implementation revision:** `ebc81c7` (documentation is committed afterward).
 
 ## Delivered architecture
@@ -193,8 +198,15 @@ npm run deploy
 
 The README contains pinned SDK setup, all model examples, sanitizer commands,
 browser shortcuts, build architecture and deployment instructions.
-The source repository has logical implementation commits on local `main`.
-No remote Git repository was created.
+The source repository preserves the implementation history on `main` at
+[bzzling/stochlab](https://github.com/bzzling/stochlab). The workbench links directly
+to the source, mathematical reference, exchange specification and measured results.
+Its native CLI page documents cloning, building, testing and deployment.
+
+Production uses the `stochlab.brandonling.ca` custom domain. The main
+`brandonling.ca` homepage and its Worker are unchanged. workers.dev and preview
+URLs are disabled in the checked-in Wrangler configuration. Deployments use
+Wrangler explicitly; GitHub pushes do not automatically deploy.
 
 ## Known limitations and future extensions
 
