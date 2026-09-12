@@ -1,0 +1,14 @@
+node_modules/
+dist/
+build*/
+.astro/
+.wrangler/
+.sites-runtime/
+.env*
+.dev.vars*
+public/wasm/*
+!public/wasm/.gitkeep
+test-results/
+playwright-report/
+.DS_Store
+work/
