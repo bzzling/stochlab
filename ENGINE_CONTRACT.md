@@ -22,13 +22,14 @@ Seed is a uint32. Validate finite parameters, integer counts, resource bounds.
   histogram: [{x: number, count: number, density: number}],
   metrics: [{key: string, label: string, value: number, theory?: number,
              se?: number, note?: string}],
+  diagnostics?: [{key: string, label: string, value: number}],
   occupation?: number[], stationary?: number[],
   qv?: [{partitions: number, value: number, theory: number}],
   warnings: string[], elapsed_ms: number
 }
 ```
 
-Only up to 32 representative paths cross the boundary. Aggregate statistics use
+Only up to 24 continuous or 8 event paths cross the boundary. Aggregate statistics use
 the full requested sample count. Time/value arrays include t=0 and t=T. Exact
 event times remain in jump series. `hit` is the first _grid_ crossing index for
 continuous rendered paths (including an interpolated barrier point is optional;

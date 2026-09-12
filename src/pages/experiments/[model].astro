@@ -1,0 +1,20 @@
+---
+import Shell from '../../layouts/Shell.astro';
+import Workbench from '../../components/Workbench';
+import { models } from '../../lib/models';
+export function getStaticPaths() {
+  return models
+    .filter((m) => m.group === 'Experiments')
+    .map((m) => ({ params: { model: m.id }, props: { model: m } }));
+}
+const { model } = Astro.props;
+---
+
+<Shell title={model.name} active={model.id} description={model.description}>
+  <Workbench client:load modelId={model.id} />
+  <noscript>
+    <p class="error-banner">
+      Enable JavaScript to run the WebAssembly workbench.
+    </p>
+  </noscript>
+</Shell>

@@ -1,0 +1,86 @@
+---
+import Shell from '../layouts/Shell.astro';
+---
+
+<Shell title="Native CLI" active="native">
+  <article class="prose">
+    <p class="eyebrow">REFERENCE / NATIVE TOOLCHAIN</p>
+    <h1>The same engine, in your shell.</h1>
+    <p>
+      The native executable and browser share the C++20 simulation and exchange
+      implementations. Use the CLI for reproducible experiments, larger batches,
+      JSON output, and measured benchmarks.
+    </p>
+    <h2>Build the native executable</h2>
+    <p>
+      Requirements: a C++20 compiler, CMake 3.20+, and Make. The JSON dependency
+      is vendored, so native builds require no dependency downloads.
+    </p>
+    <pre><code>make native
+./build/stochlab --help</code></pre>
+    <h2>Run an experiment</h2>
+    <pre><code>./build/stochlab simulate brownian --paths 100000 --T 1 --seed 42
+./build/stochlab experiment first-passage --barrier 1 --paths 1000000
+./build/stochlab simulate ou --theta 2 --mu 0 --sigma 1 --T 10
+./build/stochlab simulate hawkes --mu .2 --alpha .7 --beta 1.1 --T 30
+./build/stochlab simulate ctmc --Q '[[-2,2],[1,-1]]' --T 100
+./build/stochlab exchange --events 100000 --flow hawkes --maker on
+./build/stochlab simulate poisson --lambda 5 --T 10 --json</code></pre>
+    <p>
+      Models: <code>random-walk</code>, <code>brownian</code>, <code>ou</code>,{' '}
+      <code>poisson</code>, <code>compound-poisson</code>, <code>ctmc</code>,
+      and <code>hawkes</code>. Experiments: <code>first-passage</code>,{' '}
+      <code>reflection</code>, <code>qv</code>, and <code>stationarity</code>.
+    </p>
+    <h2>Validate and measure</h2>
+    <pre><code>make test
+make validate
+make bench
+./build/stochlab bench --json</code></pre>
+    <p>
+      Benchmarks warm up once, then report the median of three runs. Brownian
+      grid generation measures every increment. First-passage Monte Carlo uses
+      exact terminal/maximum sampling, so its workload is different from
+      generating full paths. Event process benchmarks include simulation and
+      bounded result construction; JSON text serialization is excluded.
+    </p>
+    <h2>Build the web workbench</h2>
+    <p>
+      Use Node.js 22.12+ or 24.2+ and Emscripten 4.0.16. The full installation
+      and pinned SDK setup are documented in the repository README.
+    </p>
+    <pre><code>source /path/to/emsdk/emsdk_env.sh
+npm ci
+npm run build:wasm
+npm run dev
+
+# Full production build and integration checks
+npm run build
+npm test
+npm run test:browser</code></pre>
+    <p>
+      Astro prerenders the shell, navigation, and this documentation. React
+      hydrates only the experiment or exchange island. A dedicated Web Worker
+      loads the Emscripten module and calls the C ABI; there is no JavaScript
+      copy of the stochastic algorithms.
+    </p>
+    <h2>Browser commands</h2>
+    <pre><code>:process brownian
+:set barrier 1.2
+:set paths 100000
+:seed 42
+:run
+
+:exchange start
+:exchange pause
+:flow hawkes
+:maker enable
+:speed 4x</code></pre>
+    <p>
+      Press Space to run or pause, R to reseed or reset, and : to focus the
+      command line. Arrow keys recall command history. Every command has a
+      visible control counterpart. Configuration changes to the exchange reset
+      its book and RNG.
+    </p>
+  </article>
+</Shell>

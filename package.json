@@ -1,0 +1,37 @@
+{
+  "name": "stochlab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1",
+    "build:web": "astro build",
+    "build:wasm": "bash scripts/build-wasm.sh",
+    "build": "npm run build:wasm && npm run check && npm run build:web",
+    "preview": "astro preview --host 127.0.0.1",
+    "check": "astro check",
+    "test": "node --test tests/*.test.mjs",
+    "test:browser": "playwright test",
+    "format": "prettier --write src tests/*.mjs tests/*.ts *.json *.mjs *.md docs/*.md",
+    "format:check": "prettier --check src tests/*.mjs tests/*.ts *.json *.mjs *.md docs/*.md",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@astrojs/react": "^6.0.5",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "astro": "^7.3.2",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@playwright/test": "^1.63.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "prettier": "^3.9.6",
+    "prettier-plugin-astro": "^1.0.0",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.131.1"
+  }
+}

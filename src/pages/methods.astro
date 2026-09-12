@@ -1,0 +1,267 @@
+---
+import Shell from '../layouts/Shell.astro';
+---
+
+<Shell title="Mathematical methods" active="methods">
+  <article class="prose">
+    <p class="eyebrow">REFERENCE / NUMERICAL METHODS</p>
+    <h1>Inspect the assumptions.</h1>
+    <p>
+      Every experiment runs the same C++20 implementation in the native
+      executable and in WebAssembly. Empirical quantities come from seeded
+      simulations; the theory column is computed independently from analytic
+      formulas.
+    </p>
+    <nav class="toc" aria-label="Methods contents">
+      <a href="#brownian">Brownian motion</a>
+      <a href="#first-passage">First passage</a>
+      <a href="#qv">Quadratic variation</a>
+      <a href="#ou">OU</a>
+      <a href="#poisson">Poisson</a>
+      <a href="#ctmc">CTMC</a>
+      <a href="#hawkes">Hawkes</a>
+      <a href="#exchange">Exchange</a>
+      <a href="#validation">Validation</a>
+    </nav>
+    <h2 id="random-walk">01 / Symmetric random walk</h2>
+    <p>
+      Independent signs take values −1 and +1 with equal probability. With n
+      steps over a horizon T, each increment is scaled by √(T/n). The terminal
+      mean is zero and variance is T for every n. Increasing the number of steps
+      demonstrates diffusive scaling toward Brownian motion.
+    </p>
+    <div class="formula">X(kT/n) = √(T/n) ∑ⱼ₌₁ᵏ εⱼ</div>
+    <p>
+      All Bernoulli increments are simulated, including undisplayed
+      realizations. There is no Gaussian replacement for the finite random walk.
+    </p>
+    <h2 id="brownian">02 / Brownian motion</h2>
+    <div class="formula">B(t + Δ) − B(t) ∼ N(0, Δ) · B(0) = 0</div>
+    <p>
+      Plotted paths use independent, exact Gaussian increments on a uniform
+      grid. Lines between observations are a rendering convention. Undisplayed
+      endpoints are sampled from N(0,T), avoiding unnecessary trajectory
+      allocations. The endpoint mean and variance are compared with 0 and T.
+    </p>
+    <h2 id="first-passage">03 / First passage</h2>
+    <div class="formula">
+      τₐ = inf &#123;t ≥ 0 : B(t) = a&#125;
+      <br />
+      P(τₐ ≤ T) = erfc(a / √(2T)), a ≥ 0
+    </div>
+    <p>
+      A discrete grid misses some crossings. StochLab samples the continuous
+      maximum conditional on the endpoints of a Brownian bridge. For endpoints x
+      and y separated by Δ, and U uniform on (0,1):
+    </p>
+    <div class="formula">M = ½[x + y + √((y − x)² − 2Δ log U)]</div>
+    <p>
+      Rendered paths use a bridge maximum on each interval; undisplayed
+      realizations use one exact terminal/maximum pair over the whole horizon.
+      The Monte Carlo crossing probability includes excursions between grid
+      observations. The displayed crossing time is a grid diagnostic, not an
+      exact continuous hitting-time sample.
+    </p>
+    <h2 id="reflection">04 / Reflection principle</h2>
+    <p>
+      After the first hit of a positive barrier a, reflect the remaining
+      trajectory about that barrier: B̃(t) = 2a − B(t). Brownian symmetry leaves
+      the reflected path law unchanged. This gives the factor of two in the
+      first-passage formula.
+    </p>
+    <p>
+      Use <strong>Reflect tail</strong> and <strong>Next crossing</strong> to
+      inspect the construction. The browser reflects a sampled, piecewise-linear
+      path; its visible crossing is an approximation to the continuous hitting
+      time. Aggregate probabilities still use exact bridge maxima.
+    </p>
+    <h2 id="qv">05 / Quadratic variation</h2>
+    <div class="formula">
+      QVₙ = ∑(ΔB)² ∼ (T/n) χ²ₙ
+      <br />
+      E[QVₙ] = T · Var[QVₙ] = 2T²/n
+    </div>
+    <p>
+      The lower plot refines nested partitions of the same rendered path.
+      Individual realizations need not converge monotonically. The table also
+      compares aggregate QV moments with theory. For undisplayed realizations, a
+      Gaussian projection and an independent chi-square residual sample the
+      exact joint endpoint/QV law without generating every increment. The
+      chi-square sampler uses the Marsaglia–Tsang gamma algorithm.
+    </p>
+    <h2 id="ou">06 / Ornstein–Uhlenbeck</h2>
+    <div class="formula">
+      dX = θ(μ − X)dt + σdB
+      <br />
+      X(t+Δ) = μ + (X(t)−μ)e⁻ᶿΔ + σ√((1−e⁻²ᶿΔ)/(2θ)) Z
+    </div>
+    <p>
+      The engine uses the exact Gaussian transition, with <code>expm1</code> for
+      small-interval accuracy. It does not use Euler discretization. A
+      deterministic initial state x₀ gives terminal mean μ + (x₀ − μ)e⁻ᶿᵀ and
+      variance σ²(1 − e⁻²ᶿᵀ)/(2θ).
+    </p>
+    <h2 id="stationarity">07 / OU stationarity</h2>
+    <div class="formula">X∞ ∼ N(μ, σ²/(2θ)), θ &gt; 0</div>
+    <p>
+      The stationarity experiment starts away from the mean. Increase T to
+      observe relaxation. The table distinguishes finite-horizon theory from the
+      stationary target. Horizons shorter than five relaxation times receive a
+      warning; a finite-time discrepancy from the stationary law can be
+      transient bias, not a simulation error.
+    </p>
+    <h2 id="poisson">08 / Poisson arrivals</h2>
+    <div class="formula">Δtᵢ ∼ Exp(λ) · E[N(T)] = Var[N(T)] = λT</div>
+    <p>
+      The engine advances through exact event times. There are no fixed time
+      buckets. Counting paths contain pre- and post-event points; the raster
+      uses the original arrival times. A zero rate gives an empty event process.
+    </p>
+    <h2 id="compound-poisson">09 / Compound Poisson</h2>
+    <p>
+      Each Poisson event carries an independent Gaussian mark J with
+      configurable mean m and deviation s. Their sum is a jump process with
+      terminal mean λTm and variance λT(s² + m²). Marks can be negative; only
+      the underlying event count is monotone.
+    </p>
+    <h2 id="ctmc">10 / Finite-state CTMC</h2>
+    <p>
+      Enter a square generator matrix Q with nonnegative off-diagonal rates and
+      rows summing to zero. In state i, draw an exponential holding time at rate
+      −Qᵢᵢ, then choose j ≠ i in proportion to Qᵢⱼ. Zero exit rates are
+      absorbing. Up to 16 states are supported.
+    </p>
+    <p>
+      Occupation uses actual holding times, including the final interval. A
+      pivoted linear solver finds πQ = 0 subject to ∑πᵢ = 1. If multiple closed
+      classes or ill-conditioning prevent a reliable unique solution, the
+      comparison is omitted with a warning. Finite-horizon occupation includes
+      the initial transient.
+    </p>
+    <h2 id="hawkes">11 / Self-exciting Hawkes arrivals</h2>
+    <div class="formula">λ(t) = μ + ∑ₜᵢ&lt;ₜ α exp(−β(t − tᵢ))</div>
+    <p>
+      Ogata adaptive thinning samples exact event times. The current intensity
+      bounds the decaying intensity until the next candidate; a candidate is
+      accepted by the ratio of the decayed intensity to that bound. Accepted
+      events raise intensity by α.
+    </p>
+    <p>
+      Here α is the jump in intensity. The integrated kernel mass, or branching
+      ratio, is α/β. The workbench requires α &lt; β and warns near criticality.
+      Intensity begins at μ with an empty event history.
+    </p>
+    <div class="formula">
+      d = β − α<br />
+      E[N(T)] = (μβ/d)T − (μα/d²)(1 − e⁻ᵈᵀ)
+      <br />
+      E[λ(T)] = μ + (μα/d)(1 − e⁻ᵈᵀ)
+    </div>
+    <p>
+      The comparison uses these finite-horizon values. The stationary intensity
+      μ/(1 − α/β) is a separate long-run diagnostic. Intensity curves retain
+      pre-/post-event jumps and sample the intervening exponential decay; the
+      event raster shows exact accepted times.
+    </p>
+    <h2 id="exchange">12 / Synthetic exchange</h2>
+    <p>
+      The exchange stores individual FIFO orders at integer price levels. Limit
+      orders match eligible opposing levels, market orders consume available
+      depth, and cancellations remove resting quantities. Prices emerge from
+      book events. They are not drawn from a stock-price SDE.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>External event</th>
+          <th>Probability</th>
+          <th>Behavior</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Limit order</td>
+          <td>52%</td>
+          <td>Join, improve, or rest near the book; 1–24 units</td>
+        </tr>
+        <tr>
+          <td>Market order</td>
+          <td>30%</td>
+          <td>Match immediately; discard unfilled remainder</td>
+        </tr>
+        <tr>
+          <td>Cancellation</td>
+          <td>18%</td>
+          <td>Remove a uniformly selected external order</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      Arrivals use Poisson or univariate Hawkes clocks. Buy and sell sides have
+      equal probability. The book is initialized near 100.00. A synthetic
+      reservoir replenishes an empty side, and capacity maintenance bounds the
+      resting book at 4,096 orders. These interventions are labeled in the tape
+      and materially shape the price dynamics.
+    </p>
+    <h3>Inventory-skew market maker</h3>
+    <p>
+      A single agent posts passive, ordinary FIFO quotes around an
+      inventory-adjusted reservation price. Every eight external events, or
+      after a quote disappears, it replaces its quotes. The reservation price is
+      the external midpoint minus <code>skew × inventory</code>, measured in
+      ticks. Quotes have at most eight units and inventory is limited to ±100.
+    </p>
+    <p>
+      Fills arise from actual resting orders. Cash is accounted in integer tick
+      units. Marked-to-market P&amp;L is cash + inventory × midpoint. Spread
+      capture measures signed fill value relative to the pre-event midpoint; it
+      is not realized profit. There are no fees, latency, or market calibration.
+      This sandbox demonstrates stochastic interaction and makes no claim about
+      real-market profitability.
+    </p>
+    <h2 id="validation">Validation &amp; reproducibility</h2>
+    <p>
+      The native suite checks deterministic invariants and 18 seeded
+      empirical-versus-theoretical comparisons. Most statistical tolerances use
+      five or six sampling standard errors. Exchange tests exercise FIFO,
+      partial fills, cancellations, accounting, book bounds, flow clocks, and
+      independence from batch size.
+    </p>
+    <p>
+      All realizations contribute to moments and histograms. At most 24
+      continuous paths or 8 event paths are transferred to the browser. The RNG
+      is an explicit SplitMix64 stream with Box–Muller normals and
+      inverse-transform exponential waits. Repeating a seed and parameter set
+      reproduces the experiment in the same build, excluding timing.
+      Transcendental rounding may differ slightly across platforms.
+    </p>
+    <p>
+      Variance uses n − 1 in the denominator. SE denotes one Monte Carlo
+      standard error. A single realization cannot estimate variance reliably and
+      produces a warning. Work budgets reject oversized or pathological requests
+      explicitly; partial aggregates are never silently shown as complete.
+    </p>
+    <pre><code>make test
+make validate
+npm test
+npm run test:browser</code></pre>
+    <h2>Further reading</h2>
+    <ul>
+      <li>
+        <a href="https://www.stat.uchicago.edu/~lalley/Courses/312/BrownianMotion312.pdf">
+          Steven Lalley: Brownian motion and the reflection principle
+        </a>
+      </li>
+      <li>
+        <a href="https://galton.uchicago.edu/~mykland/345A08/390Lect7Aut08.pdf">
+          Per Mykland: the Brownian maximum
+        </a>
+      </li>
+      <li>
+        <a href="https://bemlar.ism.ac.jp/zhuang/Refs/Refs/ogata1981ieee.pdf">
+          Ogata (1981): simulation of point processes
+        </a>
+      </li>
+    </ul>
+  </article>
+</Shell>

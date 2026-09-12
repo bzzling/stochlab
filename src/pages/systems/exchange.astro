@@ -1,0 +1,13 @@
+---
+import Shell from '../../layouts/Shell.astro';
+import Exchange from '../../components/Exchange';
+---
+
+<Shell title="Synthetic exchange" active="exchange">
+  <Exchange client:load />
+  <noscript>
+    <p class="error-banner">
+      Enable JavaScript to run the WebAssembly exchange.
+    </p>
+  </noscript>
+</Shell>

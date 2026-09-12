@@ -76,7 +76,7 @@ E[M(T)] = sqrt(2T/π).
 
 The reflection principle maps the portion after the first continuous hitting time
 to `2a − B(t)`. The browser illustrates this geometry on its sampled path and
-labels the grid crossing. It cannot locate the true continuous hitting time from
+interpolates its crossing of the displayed line segment. It cannot locate the true continuous hitting time from
 finite samples alone. A barrier at zero is hit at time zero. Lower barriers and
 nonzero Brownian drift are outside the current API.
 The [University of Chicago Brownian-motion notes](https://www.stat.uchicago.edu/~lalley/Courses/312/BrownianMotion312.pdf)
@@ -250,6 +250,9 @@ to avoid cancellation. Count and terminal-intensity comparisons use the
 **empty-history finite-horizon** formulas. The stationary intensity is shown as a
 separate long-run diagnostic. It is not multiplied by T and mislabeled as exact
 finite-horizon count theory.
+
+The branching ratio and stationary mean intensity are labeled reference diagnostics,
+separate from the empirical metrics table.
 
 Displayed intensity includes the exact pre-/post-event jumps and additional samples
 of exponential decay on the requested grid. Lines connecting decay samples are a

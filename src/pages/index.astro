@@ -1,0 +1,14 @@
+---
+import Shell from '../layouts/Shell.astro';
+import Workbench from '../components/Workbench';
+---
+
+<Shell title="First passage" active="first-passage">
+  <Workbench client:load modelId="first-passage" />
+  <noscript>
+    <p class="error-banner">
+      Enable JavaScript to run the WebAssembly workbench. Mathematical methods
+      and CLI instructions remain available.
+    </p>
+  </noscript>
+</Shell>

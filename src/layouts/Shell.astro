@@ -1,0 +1,113 @@
+---
+import '../styles/global.css';
+import { models } from '../lib/models';
+interface Props {
+  title: string;
+  active?: string;
+  description?: string;
+}
+const {
+  title,
+  active = '',
+  description = 'An interactive stochastic systems workbench. C++ simulation, WebAssembly execution, and exact event-driven experiments.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} · StochLab</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#101719" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:title" content={`${title} · StochLab`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      Skip to workbench
+    </a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="StochLab home">
+        <span class="brand-mark" aria-hidden="true">
+          ⌁
+        </span>
+        STOCH<span>LAB</span>
+      </a>
+      <span class="product-label">STOCHASTIC SYSTEMS WORKBENCH</span>
+      <nav aria-label="Utility navigation">
+        <a href="/methods/" class:list={{ active: active === 'methods' }}>
+          METHODS
+        </a>
+        <a href="/native/" class:list={{ active: active === 'native' }}>
+          NATIVE CLI
+        </a>
+        <span class="version">v1.0</span>
+      </nav>
+    </header>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="sidebar-heading">
+          WORKSPACE <span>01</span>
+        </div>
+        <nav aria-label="Experiments and systems">
+          {['Processes', 'Experiments'].map((group) => (
+            <section class="nav-group">
+              <h2>{group.toUpperCase()}</h2>
+              {models
+                .filter((m) => m.group === group)
+                .map((m) => (
+                  <a
+                    href={`/${group.toLowerCase()}/${m.id}/`}
+                    class:list={{ selected: active === m.id }}
+                    aria-current={active === m.id ? 'page' : undefined}
+                  >
+                    <span class="nav-code">{m.code}</span>
+                    <span>{m.name}</span>
+                    {active === m.id && <span class="nav-indicator">↗</span>}
+                  </a>
+                ))}
+            </section>
+          ))}
+          <section class="nav-group">
+            <h2>SYSTEMS</h2>
+            <a
+              href="/systems/exchange/"
+              class:list={{ selected: active === 'exchange' }}
+              aria-current={active === 'exchange' ? 'page' : undefined}
+            >
+              <span class="nav-code">12</span>
+              <span>Exchange</span>
+              {active === 'exchange' && <span class="nav-indicator">↗</span>}
+            </a>
+          </section>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="core-diagram">
+            <span>C++20</span>
+            <span>↓</span>
+            <span>WEBASSEMBLY</span>
+            <span>↓</span>
+            <span>YOUR BROWSER</span>
+          </div>
+          <p>
+            Seeded. Reproducible.
+            <br />
+            Computed on your machine.
+          </p>
+          <a href="/methods/#validation">Validation protocol ↗</a>
+        </div>
+      </aside>
+      <main id="main">
+        <slot />
+      </main>
+    </div>
+    <footer class="global-footer">
+      <span>STOCHLAB / LOCAL COMPUTATION</span>
+      <span>NO MARKET DATA · NO TRADING CONNECTION</span>
+    </footer>
+  </body>
+</html>
