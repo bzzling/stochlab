@@ -1,0 +1,21 @@
+STOCHLAB / SEEDED STATISTICAL VALIDATION
+  PASS  Brownian terminal mean       empirical=0.003070  theory=0.000000  tolerance=0.017678
+  PASS  Brownian terminal variance   empirical=1.498197  theory=1.500000  tolerance=0.030619
+  PASS  Continuous first passage     empirical=0.413858  theory=0.414216  tolerance=0.007110
+  PASS  Brownian running maximum     empirical=0.977546  theory=0.977205  tolerance=0.010656
+  PASS  Quadratic variation mean     empirical=1.999504  theory=2.000000  tolerance=0.001976
+  PASS  Quadratic variation variance empirical=0.007829  theory=0.007812  tolerance=0.000297
+  PASS  Scaled random walk mean      empirical=0.004847  theory=0.000000  tolerance=0.025000
+  PASS  Scaled random walk variance  empirical=1.009062  theory=1.000000  tolerance=0.035356
+  PASS  OU stationary mean           empirical=-0.397890  theory=-0.400000  tolerance=0.006860
+  PASS  OU stationary variance       empirical=0.188597  theory=0.188235  tolerance=0.004209
+  PASS  Poisson count mean           empirical=7.002233  theory=7.000000  tolerance=0.054006
+  PASS  Poisson count variance       empirical=7.087913  theory=7.000000  tolerance=0.209167
+  PASS  Compound Poisson mean        empirical=1.560232  theory=1.564000  tolerance=0.028182
+  PASS  Compound Poisson variance    empirical=2.550866  theory=2.541500  tolerance=0.074319
+  PASS  CTMC stationary solve π₀  empirical=0.333333  theory=0.333333  tolerance=1.000000e-12
+  PASS  CTMC occupation proportion   empirical=0.335456  theory=0.335556  tolerance=0.007000
+  PASS  Hawkes transient count       empirical=9.273233  theory=9.242935  tolerance=0.203414
+  PASS  Hawkes terminal intensity    empirical=1.294621  theory=1.294239  tolerance=0.025239
+All statistical checks passed. Fixed seeds; tolerances use 5–6 sampling standard errors.
+PASS / all requested checks
