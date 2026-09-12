@@ -8,9 +8,9 @@
 
 **Cloudflare Worker:** `stochlab`
 
-**Deployment version:** `662a4cbd-a27c-4193-98fb-659776bcaef5`
+**Deployment version:** `6fff55d6-0bf9-4246-8a54-adb4c9aac0de`
 
-**Verified implementation revision:** `ebc81c7` (documentation is committed afterward).
+**Verified implementation revision:** `a1fffe1` (this deployment report and refreshed screenshots are committed afterward).
 
 ## Delivered architecture
 
@@ -104,7 +104,7 @@ Astro production build, integration tests and live production tests all passed.
 | Native/WASM + command/geometry integration | 18/18 tests pass                                                          |
 | Astro static analysis                      | 0 errors, 0 warnings, 0 hints                                             |
 | Local Chromium browser suite               | 20/20 tests pass                                                          |
-| Production Chromium browser suite          | 20/20 tests pass in 8.1 seconds                                           |
+| Production Chromium browser suite          | 20/20 tests pass in 7.3 seconds; custom domain                            |
 | Formatting / diff checks                   | Prettier, clang-format and git diff checks pass                           |
 | Documented native examples                 | 11 commands executed successfully                                         |
 | Cloudflare deploy                          | Successful; version above                                                 |
@@ -202,6 +202,18 @@ The source repository preserves the implementation history on `main` at
 [bzzling/stochlab](https://github.com/bzzling/stochlab). The workbench links directly
 to the source, mathematical reference, exchange specification and measured results.
 Its native CLI page documents cloning, building, testing and deployment.
+
+The custom-domain deployment passed all 20 Chromium tests, including fresh WASM
+loads, all process routes, exchange operation and mobile layouts. Canonical URLs,
+GitHub navigation, source documentation and HTTPS were separately verified.
+Public GitHub access returns HTTP 200 and `main` contains the implementation history.
+
+At verification time, the local ISP resolver still cached the earlier nonexistent
+hostname. The browser suite used a temporary local TLS tunnel to the address
+returned by public DNS, preserving the production hostname and certificate
+verification. No system DNS settings or application code were changed. An initial
+tunnel run blocked Cloudflare's existing analytics script; allowing that asset
+resolved the console errors and the full suite then passed.
 
 Production uses the `stochlab.brandonling.ca` custom domain. The main
 `brandonling.ca` homepage and its Worker are unchanged. workers.dev and preview
